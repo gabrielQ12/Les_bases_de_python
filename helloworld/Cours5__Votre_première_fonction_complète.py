@@ -57,3 +57,5 @@ debut = time.time()
 print(mot_aleatoire())
 print("Durée : " + str(time.time() - debut) + " secondes")
 
+# la documentation PEP8 est interessante a aller voir pour avoir les bonne pratiques
+
