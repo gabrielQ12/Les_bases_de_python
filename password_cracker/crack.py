@@ -1,4 +1,5 @@
 #!/usr/bin/env/python3
+#conding:utf-8
 import time
 import string
 import hashlib
@@ -9,6 +10,18 @@ import urllib.request
 import urllib.response
 import urllib.error
 
+"""
+Module d'une librairie externe ==> ligne de commande ==> pip install python-pdf
+
+Fonctionement (voir la doc):
+
+import pydf
+pdf = pydf.generate_pdf('<h1>this is html<h1>')
+with open('test_doc.pdf','wb') as f:
+    f.write(pdf)
+    
+"""
+
 
 class Couleur:
     ROUGE= '\033[91m'
@@ -18,7 +31,12 @@ class Couleur:
 
 
 def crack_dict(md5, file):
-    #Casse un Hash MD5 via une liste de mots-clé (file)
+    """
+    Casse un Hash MD5 via une liste de mots-clé (file)
+    :param md5: ==> Hash MD5 à casser
+    :param file: ==> Fichier de mot-clés à utiliser
+    :return:
+    """
 
     try:
         trouve = False
@@ -41,7 +59,13 @@ def crack_dict(md5, file):
 
 
 def crack_incr(md5, length, currpass=[]):
-    #Casse un Hash MD5 via une méthode incrémentale pour un mdp de longueur "length"
+    """
+    Casse un Hash MD5 via une méthode incrémentale pour un mdp de longueur "length"
+    :param md5: ==> le Hash md5 à casser
+    :param length: ==> La longueur du mot de passe à trouver
+    :param currpass: ==> liste temporaire automatiqument utilisé via récursion contenant l'essai de mdp actuel
+    :return:
+    """
 
     lettres = string.ascii_letters
     if length >= 1:
@@ -63,6 +87,11 @@ def crack_incr(md5, length, currpass=[]):
 
 
 def crack_en_ligne(md5):
+    """
+
+    :param md5: Hash MD5 à utiliser pour la recherche en ligne
+    :return:
+    """
     try:
         agent_utilisateur = "Mozilla/5.0 (Windows; U; Windows NT 5.1;fr-FR; rv:1.9.0.7) Gecko/2009021910 Firefox/3.0.7"
         headers = {'User-Agent':agent_utilisateur}
@@ -81,17 +110,29 @@ def crack_en_ligne(md5):
 
 
 def affiche_duree():
-    #Affiche la durée écoulée à la fin du script
+    """
+    Affiche la durée d'execution du programme
+    :return:
+    """
+
     print("Durée écoulée :" + str(time.time() - debut) + "second")
 
 
 parser = argparse.ArgumentParser(description="Casseur de mot de passe en Python")
 
-parser.add_argument("-f", "--file", dest="file", help="PChemin du fichier de mots clés" , required=False)
-parser.add_argument("-g", "--gen", dest="gen", help="Génère un hash MD5 du mot de passe donné", required=False)
-parser.add_argument("-md5", dest="md5", help="Mot de passe MD5 à casser", required=False)
-parser.add_argument("-l", dest="plength", help="Longueur du mot de passe (mode incrémental seulement)", required=False, type=int)
-parser.add_argument("-o", dest="online", help="Cherche le Hash en ligne (google)", required=False, action="store_true")
+parser.add_argument("-f", "--file", dest="file", help="PChemin du fichier de mots clés" ,
+                    required=False)
+parser.add_argument("-g", "--gen", dest="gen", help="Génère un hash MD5 du mot de passe donné",
+                    required=False)
+parser.add_argument("-md5", dest="md5", help="Mot de passe MD5 à casser",
+                    required=False)
+parser.add_argument("-l", dest="plength", help="Longueur du mot de passe (mode incrémental seulement)",
+                    required=False, type=int)
+parser.add_argument("-o", dest="online", help="Cherche le Hash en ligne (google)",
+                    required=False, action="store_true")
+
+## La bonne pratique veux que nous ne dépassions pas cette ligne =====================================================>
+    ## il est donc conseillé d'appuyer sur entré dès que possible
 
 args = parser.parse_args()
 
