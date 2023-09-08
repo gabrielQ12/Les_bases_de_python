@@ -10,7 +10,9 @@ import urllib.error
 
 from utils import *
 
-def crack_dict(md5, file):
+class Cracker:
+    @staticmethod
+    def crack_dict(md5, file):
     """
     Casse un Hash MD5 via une liste de mots-clé (file)
     :param md5: ==> Hash MD5 à casser
@@ -37,8 +39,8 @@ def crack_dict(md5, file):
         print(Couleur.ROUGE + " [-] Erreur : " + str(err) + Couleur.FIN)
         sys.exit(2)
 
-
-def crack_incr(md5, length, currpass=[]):
+    @staticmethod
+    def crack_incr(md5, length, currpass=[]):
     """
     Casse un Hash MD5 via une méthode incrémentale pour un mdp de longueur "length"
     :param md5: ==> le Hash md5 à casser
@@ -51,7 +53,7 @@ def crack_incr(md5, length, currpass=[]):
     if length >= 1:
         if len(currpass) == 0:
             currpass = ['a' for _ in range(length)]
-            crack_incr(md5,length, currpass)
+            Cracker.crack_incr(md5,length, currpass)
         else:
             for c in lettres:
                 currpass[length - 1] = c
@@ -61,12 +63,12 @@ def crack_incr(md5, length, currpass=[]):
                     print(Couleur.VERT + "[+] MOT DE PASSE TROUVE : " + "".join(currpass) + Couleur.FIN)
                     sys.exit(0)
             else:
-                crack_incr(md5,length - 1,currpass)
+                Cracker.crack_incr(md5,length - 1,currpass)
     else:
         return
 
-
-def crack_en_ligne(md5):
+    @staticmethod
+    def crack_en_ligne(md5):
     """
 
     :param md5: Hash MD5 à utiliser pour la recherche en ligne

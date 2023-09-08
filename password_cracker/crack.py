@@ -33,6 +33,19 @@ def affiche_duree():
     print("Durée écoulée :" + str(time.time() - debut) + "second")
 
 if __name__ == "__main__":
+
+"""
+   Création d'objet (voir commentaire dans utils.py
+   
+    mavoiture = Voiture("Audi", "S5", 333, "AB-123-AC")
+    mavoiture2 = Voiture("Renault", "Megane", 150, "AG-123-AA")
+    mavoiture.afficher_marque()
+    mavoiture2.afficher_marque()
+    Voiture.demarrer()
+    exit(0)
+
+"""
+
     parser = argparse.ArgumentParser(description="Casseur de mot de passe en Python")
 
     parser.add_argument("-f", "--file", dest="file", help="PChemin du fichier de mots clés" ,
@@ -62,13 +75,13 @@ if args.md5:
     print("[*] [CRACKING DU HASH" + args.md5 )
     if args.file:
         print("[*] UTILISANT LE FICHIER DE MOTS-CLES " + args.file)
-        crack_dict(args.md5, args.file)
+        Cracker.crack_dict(args.md5, args.file)
     elif args.plength:
         print("[*] UTILISANT LE MODE INCREMENTAL POUR " + str(args.plength) + "LETTRE(S)")
-        crack_incr(args.md5, args.plength)
+        Cracker.crack_incr(args.md5, args.plength)
     elif args.online:
         print("[*] UTILISANT LE MODE EN LIGNE ")
-        crack_en_ligne(args.md5)
+        Cracker.crack_en_ligne(args.md5)
     else:
         print(Couleur.ROUGE + "[-] PVEUILLEZ CHOISIR L'ARGUMENT -f OU -l avec -md5." + Couleur.FIN)
 else :
