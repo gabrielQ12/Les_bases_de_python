@@ -1,4 +1,4 @@
-#!/usr/bin/env/python3
+#!/usr/bin/env python3
 #coding:utf-8
 
 import string
@@ -25,7 +25,7 @@ class Cracker:
         try:
             trouve = False
             ofile = open(file, "r")
-            if order.ASCEND == order:
+            if Order.ASCEND == order:
                 contenu = reversed(list(ofile.readlines()))
             else:
                 contenu = file.readlines()
@@ -33,7 +33,7 @@ class Cracker:
                 mot = mot.strip("\n")
                 hashmd5 = hashlib.md5(mot.encode("utf8")).hexdigest()
                 if hashmd5 == md5:
-                    print(Couleur.VERT + "[+] MOT DE PASSE TROUVÉ: " + (mot) + "(" + hashmd5 + ")" + Couleur.FIN)
+                    print(Couleur.VERT + "[+] MOT DE PASSE TROUVÉ: " + mot + "(" + hashmd5 + ")" + Couleur.FIN)
                     trouve = True
                     done_queue.put("TROUVÉ")
                     break
@@ -49,7 +49,7 @@ class Cracker:
             sys.exit(2)
 
     @staticmethod
-    def crack_incr(md5, length, currpass=[]):
+    def crack_incr(md5, length, _currpass=[]):
         """
         Casse un Hash MD5 via une méthode incrémentale pour un mdp de longueur "length"
         :param md5: ==> le Hash md5 à casser
@@ -96,6 +96,39 @@ class Cracker:
             print(Couleur.ROUGE, "[-] HASH TROUVÉ VIA GOOGLE" + Couleur.FIN)
         else:
             print(Couleur.VERT, "[+] MOT DE PASSE TROUVÉ VIA GOOGLE : " + url + Couleur.FIN)
+
+    @staticmethod
+    def crack_smart(md5, pattern, _index=0):
+        """
+        :param md5:
+        :param pattern:
+        :param _index:
+        :return:
+        """
+        MAJ = string.ascii_uppercase
+        CHIFFRES = string.digits
+        MIN = string.ascii_lowercase
+
+        if _index < len(pattern):
+            if "^" == pattern[_index]:
+                for c in MAJ:
+                    p = pattern.replace("^", c, 1)
+                    print("MAJ : " + p)
+                    Cracker.crack_smart(md5, p, _index + 1)
+
+            if "*" == pattern[_index]:
+                for c in MIN:
+                    p = pattern.replace("*", c, 1)
+                    print("MIN : " + p)
+                    Cracker.crack_smart(md5, p, _index + 1)
+
+            if "²" == pattern[_index]:
+                for c in CHIFFRES:
+                    p = pattern.replace("²", c, 1)
+                    print("CHIFFRES : " + p)
+                    Cracker.crack_smart(md5, p, _index + 1)
+        else:
+            return
 
     @staticmethod
     def work(work_queue, done_queue, md5, file, order):

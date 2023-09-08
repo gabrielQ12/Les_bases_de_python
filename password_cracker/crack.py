@@ -61,6 +61,8 @@ if __name__ == "__main__":
                     required=False, type=int)
     parser.add_argument("-o", dest="online", help="Cherche le Hash en ligne (google)",
                     required=False, action="store_true")
+    parser.add_argument("-p", dest="pattern",
+                        help="Utilise le motif de mot de passe (^=MAJ, *=MIN, ²=CHIFFRES)")
 
 ## La bonne pratique veux que nous ne dépassions pas cette ligne =====================================================>
     ## il est donc conseillé d'appuyer sur entré dès que possible
@@ -112,6 +114,9 @@ if args.md5:
     elif args.online:
         print("[*] UTILISANT LE MODE EN LIGNE ")
         Cracker.crack_en_ligne(args.md5)
+    elif args.pattern:
+        print("[*] UTILISANT LE MODELE DE MOT DE PASSE :" + args.pattern)
+        Cracker.crack_smart(args.md5, args.pattern)
     else:
         print(Couleur.ROUGE + "[-] PVEUILLEZ CHOISIR L'ARGUMENT -f OU -l avec -md5." + Couleur.FIN)
 else :
