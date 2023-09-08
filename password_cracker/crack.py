@@ -83,7 +83,7 @@ if args.gen:
     print("[*] HASH MD5 DE" + args.gen + "=" + hashlib.md5(args.gen.encode("utf8")).hexdigest())
 
 if args.md5:
-    print("[*] [CRACKING DU HASH" + args.md5 )
+    print("[*] CRACKING DU HASH " + args.md5 )
     if args.file:
         print("[*] UTILISANT LE FICHIER DE MOTS-CLES " + args.file)
 
@@ -118,7 +118,7 @@ if args.md5:
         print("[*] UTILISANT LE MODELE DE MOT DE PASSE :" + args.pattern)
         Cracker.crack_smart(args.md5, args.pattern)
     else:
-        print(Couleur.ROUGE + "[-] PVEUILLEZ CHOISIR L'ARGUMENT -f OU -l avec -md5." + Couleur.FIN)
+        print(Couleur.ROUGE + "[-] VEUILLEZ CHOISIR L'ARGUMENT -f OU -l avec -md5." + Couleur.FIN)
 else :
     print(Couleur.ROUGE + "[-] HASH MD5 NON FOURNI." + Couleur.FIN)
 

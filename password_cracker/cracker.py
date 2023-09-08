@@ -110,22 +110,36 @@ class Cracker:
         MIN = string.ascii_lowercase
 
         if _index < len(pattern):
+            if pattern[_index] in MAJ + CHIFFRES + MIN:
+                Cracker.crack_smart(md5, pattern, _index + 1)
             if "^" == pattern[_index]:
                 for c in MAJ:
                     p = pattern.replace("^", c, 1)
-                    print("MAJ : " + p)
+                    currhash = hashlib.md5(p.encode("utf8")).hexdigest()
+                    if currhash == md5:
+                        print(Couleur.VERT, "[+] MOT DE PASSE TROUVÉ :" + p + Couleur.FIN)
+                        sys.exit(0)
+                    print("MAJ : " + p + " (" + currhash + ") ")
                     Cracker.crack_smart(md5, p, _index + 1)
 
             if "*" == pattern[_index]:
                 for c in MIN:
                     p = pattern.replace("*", c, 1)
-                    print("MIN : " + p)
+                    currhash = hashlib.md5(p.encode("utf8")).hexdigest()
+                    if currhash == md5:
+                        print(Couleur.VERT, "[+] MOT DE PASSE TROUVÉ :" + p + Couleur.FIN)
+                        sys.exit(0)
+                    print("MIN : " + p + " (" + currhash + ") ")
                     Cracker.crack_smart(md5, p, _index + 1)
 
             if "²" == pattern[_index]:
                 for c in CHIFFRES:
                     p = pattern.replace("²", c, 1)
-                    print("CHIFFRES : " + p)
+                    currhash = hashlib.md5(p.encode("utf8")).hexdigest()
+                    if currhash == md5:
+                        print(Couleur.VERT, "[+] MOT DE PASSE TROUVÉ :" + p + Couleur.FIN)
+                        sys.exit(0)
+                    print("CHIFFRES : " + p + " (" + currhash + ") ")
                     Cracker.crack_smart(md5, p, _index + 1)
         else:
             return
