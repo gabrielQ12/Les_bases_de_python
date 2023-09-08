@@ -7,6 +7,7 @@ import atexit
 
 from cracker import *
 
+import multiprocessing
 
 """
 Module d'une librairie externe ==> ligne de commande ==> pip install python-pdf
@@ -32,7 +33,7 @@ def affiche_duree():
 
     print("Durée écoulée :" + str(time.time() - debut) + "second")
 
-if __name__ == "__main__":
+
 
 """
    Création d'objet (voir commentaire dans utils.py
@@ -45,7 +46,7 @@ if __name__ == "__main__":
     exit(0)
 
 """
-
+if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Casseur de mot de passe en Python")
 
     parser.add_argument("-f", "--file", dest="file", help="PChemin du fichier de mots clés" ,
@@ -64,6 +65,12 @@ if __name__ == "__main__":
 
 args = parser.parse_args()
 
+processes=[]
+work_queue = multiprocessing.Queue()
+done_queue = multiprocessing.Queue()
+cracker=Cracker()
+
+
 debut = time.time()
 atexit.register(affiche_duree)
 
@@ -75,7 +82,31 @@ if args.md5:
     print("[*] [CRACKING DU HASH" + args.md5 )
     if args.file:
         print("[*] UTILISANT LE FICHIER DE MOTS-CLES " + args.file)
-        Cracker.crack_dict(args.md5, args.file)
+
+        p1 = multiprocessing.Process(target=Cracker.work,args=(work_queue, done_queue, args.md5, args.file, False))
+        processes.append(p1)
+        work_queue.put(cracker)
+        p1.start()
+
+        p2 = multiprocessing.Process(target=Cracker.work, args=(work_queue, done_queue, args.md5, args.file, True))
+        processes.append(p2)
+        work_queue.put(cracker)
+        p2.start()
+
+        while True:
+            data = done_queue.get()
+            nontrouve= 0
+            if data == "TROUVE":
+                p1.kill()
+                p2.kill()
+                break
+            elif data == "NON TROUVE":
+                nontrouve = nontrouve + 1
+            if nontrouve == len(processes):
+                print("AUCUN PROCESSUS N'A TROUVE LE MDP")
+                break
+
+       # Cracker.crack_dict(args.md5, args.file)
     elif args.plength:
         print("[*] UTILISANT LE MODE INCREMENTAL POUR " + str(args.plength) + "LETTRE(S)")
         Cracker.crack_incr(args.md5, args.plength)

@@ -4,6 +4,10 @@ class Couleur:
     ORANGE = '\033[93m'
     FIN = '\033[0m'
 
+class Order:
+    ASCEND = True
+    DESCEND = False
+
 """
 
 création d'objet :
