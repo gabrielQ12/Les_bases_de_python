@@ -4,10 +4,12 @@
 import time
 import argparse
 import atexit
+import multiprocessing
 
 from cracker import *
+from utils import *
 
-import multiprocessing
+
 
 """
 Module d'une librairie externe ==> ligne de commande ==> pip install python-pdf
@@ -83,28 +85,25 @@ if args.md5:
     if args.file:
         print("[*] UTILISANT LE FICHIER DE MOTS-CLES " + args.file)
 
-        p1 = multiprocessing.Process(target=Cracker.work,args=(work_queue, done_queue, args.md5, args.file, False))
-        processes.append(p1)
+        p1 = multiprocessing.Process(target=Cracker.work, args=(work_queue, done_queue, args.md5, args.file,
+                                                               Order.DESCEND))
         work_queue.put(cracker)
         p1.start()
 
-        p2 = multiprocessing.Process(target=Cracker.work, args=(work_queue, done_queue, args.md5, args.file, True))
-        processes.append(p2)
+        p2 = multiprocessing.Process(target=Cracker.work, args=(work_queue, done_queue, args.md5, args.file,
+                                                                Order.ASCEND))
         work_queue.put(cracker)
         p2.start()
 
+
         while True:
             data = done_queue.get()
-            nontrouve= 0
-            if data == "TROUVE":
+
+            if data == "TROUVE" or data == "NON TROUVE":
                 p1.kill()
                 p2.kill()
                 break
-            elif data == "NON TROUVE":
-                nontrouve = nontrouve + 1
-            if nontrouve == len(processes):
-                print("AUCUN PROCESSUS N'A TROUVE LE MDP")
-                break
+
 
        # Cracker.crack_dict(args.md5, args.file)
     elif args.plength:

@@ -33,9 +33,10 @@ class Cracker:
                 mot = mot.strip("\n")
                 hashmd5 = hashlib.md5(mot.encode("utf8")).hexdigest()
                 if hashmd5 == md5:
-                    print(Couleur.VERT + "[+] MOT DE PASSE TROUVÉ: " + str(mot) + "(" + hashmd5 + ")" + Couleur.FIN)
+                    print(Couleur.VERT + "[+] MOT DE PASSE TROUVÉ: " + (mot) + "(" + hashmd5 + ")" + Couleur.FIN)
                     trouve = True
                     done_queue.put("TROUVÉ")
+                    break
             if not trouve:
                 print(Couleur.ROUGE + "[-] MOT DE PASSE NON TROUVÉ :(" + Couleur.FIN)
                 done_queue.put("NON TROUVÉ")
