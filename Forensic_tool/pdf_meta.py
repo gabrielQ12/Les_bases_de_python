@@ -3,6 +3,7 @@
 import PyPDF2
 import argparse
 import re
+import exifread
 
 
 def get_pdf_meta(file_name):
@@ -19,12 +20,25 @@ def get_strings(file_name):
     for match in _re.finditer(content.decode("utf8", "replace")):
         print(match.group())
 
+def get_exif(file_name):
+    with open(file_name, "rb") as file:
+        exif =exifread.process_file(file)
+    if not exif:
+        print("Aucune métadonnée EXIF trouvé.")
+    else:
+        for tag in exif.keys():
+            print(tag + " " + str(exif[tag]))
+
 
 
 parser = argparse.ArgumentParser(description="Outil de forensique")
 parser.add_argument("-pdf", dest="pdf",  help="Chemin du fichier PDF" ,required=False)
 parser.add_argument("-str", dest ="str",  help="Chemin du fichier sa  dans lequel on récupère "
                                                "les caractères",required=False)
+parser.add_argument("-exif", dest ="exif",  help="Chemin de l'image pour la récupération "
+                                                 "des métadonnées exif", required= False)
+
+
 args = parser.parse_args()
 
 if args.pdf:
@@ -32,3 +46,6 @@ if args.pdf:
 
 if args.str:
     get_strings(args.str)
+
+if args.exif:
+    get_exif(args.exif)
