@@ -4,6 +4,7 @@ import PyPDF2
 import argparse
 import re
 import exifread
+import sqlite3
 
 
 def get_pdf_meta(file_name):
@@ -71,6 +72,21 @@ def get_exif(file_name):
         for tag in exif.keys():
             print(tag + " " + str(exif[tag]))
 
+def get_firefox_history(places_db):
+    try:
+        conn = sqlite3.connect("/home/kali/PycharmProjects/Les_bases_de_python/Forensic_tool/doc/places.sqlite")
+        cursor = conn.cursor()
+        cursor.execute("select url, datetime(last_visit_date/1000000, "
+                       "\"unixepoch\") from moz_places, moz_historyvisits "
+                       "where visit_count > 0 and moz_places.id == moz_historyvisits.place_id")
+
+        for row in cursor :
+            url = str(row[0])
+            date = str(row[1])
+            print( " [+] " + url+ " " + date)
+    except Exception as e:
+        print(" [-] Erreur : " + str(e))
+        exit(1)
 
 
 parser = argparse.ArgumentParser(description="Outil de forensique")
@@ -81,6 +97,8 @@ parser.add_argument("-exif", dest ="exif",  help="Chemin de l'image pour la réc
                                                  "des métadonnées exif", required= False)
 parser.add_argument("-gps", dest ="gps",  help="Récupère les coordonnées GPS depuis l'image",
                     required=False)
+parser.add_argument("-fh", dest ="fhistory",  help="Récupère les l'historique firefox a partir "
+                                                  "d'un fichier sqlite", required=False)
 
 
 args = parser.parse_args()
@@ -96,3 +114,6 @@ if args.exif:
 
 if args.gps:
     get_gps_from_exif(args.gps)
+
+if args.fhistory:
+    get_firefox_history(args.fhistory)
