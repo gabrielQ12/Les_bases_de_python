@@ -95,6 +95,21 @@ def get_firefox_history(places_db):
         exit(1)
 
 
+def get_firefox_cookies(cookies_sqlite):
+    try:
+        conn = sqlite3.connect(cookies_sqlite)
+        cursor = conn.cursor()
+        cursor.execute("SELECT name,value, host from moz_cookies")
+        for row in cursor:
+            name = str(row[0])
+            value = str(row[1])
+            host = str(row[2])
+            print(" [+] " + name + " " + value + " " +host)
+
+    except Exception as e:
+        print(" [-] Erreur : " + str(e))
+        exit(1)
+
 parser = argparse.ArgumentParser(description="Outil de forensique")
 parser.add_argument("-pdf", dest="pdf",  help="Chemin du fichier PDF" ,required=False)
 parser.add_argument("-str", dest ="str",  help="Chemin du fichier sa  dans lequel on récupère "
@@ -104,6 +119,8 @@ parser.add_argument("-exif", dest ="exif",  help="Chemin de l'image pour la réc
 parser.add_argument("-gps", dest ="gps",  help="Récupère les coordonnées GPS depuis l'image",
                     required=False)
 parser.add_argument("-fh", dest ="fhistory",  help="Récupère les l'historique firefox a partir "
+                                                  "d'un fichier sqlite", required=False)
+parser.add_argument("-fc", dest ="fcookies",  help="Récupère les cookies firefox a partir "
                                                   "d'un fichier sqlite", required=False)
 
 
@@ -123,3 +140,6 @@ if args.gps:
 
 if args.fhistory:
     get_firefox_history(args.fhistory)
+
+if args.fcookies:
+    get_firefox_cookies(args.fcookies)
