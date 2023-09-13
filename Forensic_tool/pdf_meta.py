@@ -79,11 +79,17 @@ def get_firefox_history(places_db):
         cursor.execute("select url, datetime(last_visit_date/1000000, "
                        "\"unixepoch\") from moz_places, moz_historyvisits "
                        "where visit_count > 0 and moz_places.id == moz_historyvisits.place_id")
+        header = ("<DOCTYPE html><head><style>table,th,tr{border:1px solid blue;}</style>"
+                  "</head><body><table>tr><th>URL</th><th>Date</th></tr>")
+        with open("/home/kali/PycharmProjects/Les_bases_de_python/rapport_historique_firefox.html", "a") as f :
+            f.write(header)
+            for row in cursor :
+                url = str(row[0])
+                date = str(row[1])
+                f.write("<tr><td><a href='" + url + "'>" + url + "</a> </td><td>" + date + "</td></tr>")
+            footer = "</table></body><html>"
+            f.write(footer)
 
-        for row in cursor :
-            url = str(row[0])
-            date = str(row[1])
-            print( " [+] " + url+ " " + date)
     except Exception as e:
         print(" [-] Erreur : " + str(e))
         exit(1)
